@@ -5,7 +5,7 @@ LED RGB.
 - Easy to use.
 - Compatible with Arduino.
 
-## Example of usage:
+## Example of use:
 ```c++
 
 #include <led_rgb.h>
