@@ -10,8 +10,13 @@ LED RGB.
 
 #include <led_rgb.h>
 
-Led_RGB my_led(6, 10, 11, false);
-int r = 128, g = 0, b = 128;
+/*---Creating the object my_led---*/
+int r_pin = 6, g_pin = 10, b_pin = 11;
+bool commom_cathode = false;
+Led_RGB my_led(r_pin, g_pin, b_pin, common_cathode);
+
+/*---Variables to use later---*/
+int r = 255, g = 255, b = 0;//yellow color
 String colors[] = {"red", "green", "blue", "white"};
 
 void setup() {
@@ -20,15 +25,15 @@ void setup() {
 
 void loop() {
 
-  my_led.set_color(r, g, b);
+  my_led.set_color(r, g, b);//yelow
   delay(1000);
 
   for (auto &color : colors){
-    my_led.set_color(color);
+    my_led.set_color(color);//all colors from the colors array
     delay(1000);
   }
 
-  my_led.off();
+  my_led.off();//off led
   delay(2000);
 
 }
