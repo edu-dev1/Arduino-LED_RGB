@@ -1,73 +1,54 @@
-#include <led_rgb.h>
+#include "rgbLED.h"
 
-Led_RGB::Led_RGB(int R_pin, int G_pin, int B_pin, bool common_cathode){
-    __R_pin = R_pin;
-    __G_pin = G_pin;
-    __B_pin = B_pin;
-    __common_cathode = common_cathode;
-    pinMode(R_pin, OUTPUT);
-    pinMode(G_pin, OUTPUT);
-    pinMode(B_pin, OUTPUT);
-    __state_on = common_cathode ? HIGH : LOW;
-    __state_off = common_cathode ? LOW : HIGH;
-    
+rgb_LED::rgb_LED(uint8_t r, uint8_t g, uint8_t b, bool common_cathode) : __r(r), __g(g), __b(b), __common_cathode(common_cathode){
+    pinMode(__r, OUTPUT);
+    pinMode(__g, OUTPUT);
+    pinMode(__b, OUTPUT);
+}
+rgb_LED::rgb_LED(const uint8_t pins[3], bool common_cathode) : rgb_LED(pins[0], pins[1], pins[2], common_cathode) {}
+
+void rgb_LED::red(void){
+    set_color(255, 0, 0);
 }
 
-void Led_RGB::red(){
-    
-    digitalWrite(__R_pin, __state_on);
-    digitalWrite(__G_pin, __state_off);
-    digitalWrite(__B_pin, __state_off);
+void rgb_LED::green(void){
+    set_color(0, 255, 0);
 }
 
-void Led_RGB::green(){
-    
-    digitalWrite(__R_pin, __state_off);
-    digitalWrite(__G_pin, __state_on);
-    digitalWrite(__B_pin, __state_off);
+void rgb_LED::blue(void){
+    set_color(0, 0, 255);
 }
 
-void Led_RGB::blue(){
-    
-    digitalWrite(__R_pin, __state_off);
-    digitalWrite(__G_pin, __state_off);
-    digitalWrite(__B_pin, __state_on);
+void rgb_LED::white(void){
+    analogWrite(__r, __common_cathode ? 255 : 0);
+    analogWrite(__g, __common_cathode ? 255 : 0);
+    analogWrite(__b, __common_cathode ? 255 : 0);
 }
 
-void Led_RGB::set_color(int r, int g, int b){
-
-    analogWrite(__R_pin, __common_cathode ? r : (255 - r));
-    analogWrite(__G_pin, __common_cathode ? g : (255 - g));
-    analogWrite(__B_pin, __common_cathode ? b : (255 - b));
+void rgb_LED::set_color(const uint8_t &r, const uint8_t &g, const uint8_t &b){
+    analogWrite(__r, __common_cathode ? r : (255 - r));
+    analogWrite(__g, __common_cathode ? g : (255 - g));
+    analogWrite(__b, __common_cathode ? b : (255 - b));
 }
 
-void Led_RGB::set_color(String color_name){
-    if (color_name == "red"){
-        Led_RGB::red();
+void rgb_LED::set_color(const char* color){
+    static const __COLORS COLORS[] = {{"red", &rgb_LED::red}, {"green", &rgb_LED::green}, {"blue", &rgb_LED::blue}, {"white", &rgb_LED::white}};
+    void(rgb_LED::*func_ptr)(void) = nullptr;
+    for(int c = 0; c < C; c++){
+        if(strcmp(color, COLORS[c]._color) == 0){
+            func_ptr = COLORS[c].func_ptr;
+            break;
+        }
     }
-    else if (color_name == "green"){
-        Led_RGB::green();
+    if(func_ptr != nullptr){
+        (this->*func_ptr)();
+
     }
-    else if (color_name == "blue"){
-        Led_RGB::blue();
-    }
-    else if (color_name == "white"){
-        Led_RGB::white();
-    }
-    else{
-        Led_RGB::off();
-    }
-    
 }
 
-void Led_RGB::white(){
-    digitalWrite(__R_pin, __state_on);
-    digitalWrite(__G_pin, __state_on);
-    digitalWrite(__B_pin, __state_on);
+void rgb_LED::on(void){
+    set_color(255, 255, 255);
 }
-
-void Led_RGB::off(){
-    digitalWrite(__R_pin, __state_off);
-    digitalWrite(__G_pin, __state_off);
-    digitalWrite(__B_pin, __state_off);
+void rgb_LED::off(void){
+    set_color(0, 0, 0);
 }
