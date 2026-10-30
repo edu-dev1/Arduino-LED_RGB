@@ -1,28 +1,27 @@
-#ifndef led_rgb_h
-#define led_rgb_h
+#ifndef rgbLED
+#define rgbLED
 
 #include <Arduino.h>
-#include <string.h>
+#define C 4
 
-class Led_RGB{
+class rgb_LED{
     private:
-        //Attributes
-        int __R_pin;
-        int __G_pin;
-        int __B_pin;
+        struct __COLORS{
+            const char* _color;
+            void (rgb_LED::*func_ptr)(void);
+        };
+        uint8_t __r, __g, __b;
         bool __common_cathode;
-        int __state_on, __state_off;
-    
     public:
-        //methods
-        Led_RGB(int, int, int, bool);
-        void red();//The LED lights up red.
-        void green();//The LED lights up green.
-        void blue();//The LED lights up blue.
-        void set_color(int, int, int);//The LED lights up on rgb mode (0-255).
-        void set_color(String);//Like "red", "green", "blue" or "white".
-        void white();//The LED lights up white.
-        void off();//Turns off the LED.
+        rgb_LED(uint8_t r, uint8_t g, uint8_t b, bool common_cathode);
+        rgb_LED(const uint8_t pins[3], bool common_cathode);
+        void red(void);
+        void green(void);
+        void blue(void);
+        void white(void);
+        void set_color(const uint8_t &r, const uint8_t &g, const uint8_t &b);
+        void set_color(const char* color);
+        void on(void);
+        void off(void);
 };
-
 #endif
