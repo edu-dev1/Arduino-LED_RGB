@@ -7,25 +7,18 @@ LED RGB.
 
 ## Example of use:
 ```c++
-#include <Arduino.h>
 #include <rgbLED.h>
 
 uint8_t led_pins[] = {11, 9, 3};
 bool common_cathode = false;
 rgb_LED led(11, 9, 3, common_cathode);
 
-void setup() {
-    Serial.begin(9600);
-
-}
+void setup() {}
 
 void loop() {
-    
-    led.on();
-    delay(1000);
-    led.off();
-    delay(1000);
-
-
+  led.on();
+  delay(1000);
+  led.off();
+  delay(1000);
 }
 ```
